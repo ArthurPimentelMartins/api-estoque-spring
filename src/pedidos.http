@@ -1,0 +1,25 @@
+### 1. Salvar um novo produto
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "Placa de Vídeo RX 580 8GB",
+  "quantidade": 2,
+  "preco": 1200.50
+}
+
+### 2. Listar todos os produtos
+GET http://localhost:8080/api/produtos
+
+### 3. Atualizar o produto de ID 1
+PUT http://localhost:8080/api/produtos/1
+Content-Type: application/json
+
+{
+  "nome": "Placa de Vídeo RX 580 8GB (Atualizada)",
+  "quantidade": 5,
+  "preco": 1150.00
+}
+
+### 4. Deletar o produto de ID 1
+DELETE http://localhost:8080/api/produtos/1
