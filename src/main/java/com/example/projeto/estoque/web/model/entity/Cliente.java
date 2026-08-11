@@ -1,26 +1,34 @@
 package com.example.projeto.estoque.web.model.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Cliente {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nome;
     private String email;
     private String telefone;
 
     public Cliente(){};
 
-    public Cliente(int id, String nome, String email, String telefone) {
+    public Cliente(Long id, String nome, String email, String telefone) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
