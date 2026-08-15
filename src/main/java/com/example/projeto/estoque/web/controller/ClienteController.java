@@ -2,7 +2,6 @@ package com.example.projeto.estoque.web.controller;
 
 import com.example.projeto.estoque.web.model.entity.Cliente;
 import com.example.projeto.estoque.web.model.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
-    @Autowired
-    private ClienteRepository repository;
+    private final ClienteRepository repository;
+
+    public ClienteController(ClienteRepository repository) {
+        this.repository = repository;
+    }
 
     @GetMapping
     public List<Cliente> listar() {

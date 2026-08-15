@@ -3,7 +3,6 @@ package com.example.projeto.estoque.web.controller;
 
 import com.example.projeto.estoque.web.model.entity.Produto;
 import com.example.projeto.estoque.web.model.repository.ProdutoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +11,12 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoRepository repository;
+    private final ProdutoRepository repository;
+
+    public ProdutoController(ProdutoRepository repository) {
+        this.repository = repository;
+    }
+
 
     @GetMapping
     public List<Produto> listar() {
