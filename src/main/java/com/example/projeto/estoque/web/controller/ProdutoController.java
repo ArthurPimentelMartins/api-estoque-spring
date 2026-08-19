@@ -2,47 +2,61 @@ package com.example.projeto.estoque.web.controller;
 
 
 import com.example.projeto.estoque.web.model.entity.Produto;
-import com.example.projeto.estoque.web.model.repository.ProdutoRepository;
+import com.example.projeto.estoque.web.service.ProdutoService;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    private final ProdutoRepository repository;
+    private final ProdutoService service;
 
-    public ProdutoController(ProdutoRepository repository) {
-        this.repository = repository;
+    public ProdutoController(ProdutoService service) {
+        this.service = service;
     }
 
 
     @GetMapping
     public List<Produto> listar() {
-        return repository.findAll();
+        return service.listarTodos();
     }
 
     @PostMapping
-    public Produto salvar(@RequestBody Produto produto) {
-        return repository.save(produto);
+    public Produto salvar(@Valid @RequestBody Produto produto) {
+        return service.salvar(produto);
     }
 
     @PutMapping("/{id}")
-    public Produto atualizar(@PathVariable Long id, @RequestBody Produto produtoAtualizado) {
-
-        Produto produtoExistente = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
-        produtoExistente.setNome(produtoAtualizado.getNome());
-        produtoExistente.setQuantidade(produtoAtualizado.getQuantidade());
-        produtoExistente.setPreco(produtoAtualizado.getPreco());
-
-        return repository.save(produtoExistente);
+    public Produto atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
+        return service.atualizar(id, produto);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deletar(id);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+        Map<String, String> erros = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String campo = ((FieldError) error).getField();
+            String mensagem = error.getDefaultMessage();
+            erros.put(campo, mensagem);
+        });
+
+        return erros;
     }
 }
