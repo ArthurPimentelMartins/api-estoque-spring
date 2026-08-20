@@ -44,19 +44,4 @@ public class ProdutoController {
     public void deletar(@PathVariable Long id) {
         service.deletar(id);
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationErrors(MethodArgumentNotValidException ex) {
-
-        Map<String, String> erros = new HashMap<>();
-
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String campo = ((FieldError) error).getField();
-            String mensagem = error.getDefaultMessage();
-            erros.put(campo, mensagem);
-        });
-
-        return erros;
-    }
 }

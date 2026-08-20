@@ -1,5 +1,7 @@
 package com.example.projeto.estoque.web.service;
 
+import com.example.projeto.estoque.web.exception.BusinessException;
+import com.example.projeto.estoque.web.exception.ResourceNotFoundException;
 import com.example.projeto.estoque.web.model.entity.Produto;
 import com.example.projeto.estoque.web.model.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class ProdutoService {
 
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new IllegalArgumentException("Produto não encontrado");
+            throw new ResourceNotFoundException("Produto com ID " + id + " não encontrado");
         }
         repository.deleteById(id);
     }
@@ -51,7 +53,9 @@ public class ProdutoService {
 
     public Produto buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Produto com ID " + id + " não encontrado"
+                ));
     }
 
     private void validarRegrasNegocio(Produto produto) {
@@ -70,7 +74,7 @@ public class ProdutoService {
         }
 
         if (!erros.isEmpty()) {
-            throw new IllegalArgumentException("Erros de validação: " + String.join("; ", erros));
+            throw new BusinessException(String.join("; ", erros));
         }
     }
 
@@ -78,9 +82,8 @@ public class ProdutoService {
         Produto produto = buscarPorId(produtoId);
 
         if (produto.getQuantidade() < quantidade) {
-            throw new IllegalArgumentException(
-                    String.format("Estoque insuficiente. Disponível: %d, Solicitado: %d",
-                            produto.getQuantidade(), quantidade)
+            throw new BusinessException(
+                    String.format("Estoque insuficiente. Disponível: %d, Solicitado: %d")
             );
         }
 
