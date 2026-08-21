@@ -40,6 +40,7 @@ public class ProdutoService {
         return repository.save(produtoExistente);
     }
 
+    @Transactional
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Produto com ID " + id + " não encontrado");
@@ -47,10 +48,12 @@ public class ProdutoService {
         repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Produto> listarTodos() {
         return repository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Produto buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -78,12 +81,13 @@ public class ProdutoService {
         }
     }
 
+    @Transactional
     public void baixarEstoque(Long produtoId, Integer quantidade) {
         Produto produto = buscarPorId(produtoId);
 
         if (produto.getQuantidade() < quantidade) {
             throw new BusinessException(
-                    String.format("Estoque insuficiente. Disponível: %d, Solicitado: %d")
+                    String.format("Estoque insuficiente. Disponível: %d, Solicitado: %d",produto.getQuantidade(), quantidade)
             );
         }
 
